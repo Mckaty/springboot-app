@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ecr-demo-201
+  name: ecr-demo-201
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: ecr-demo-201
+  template:
+    metadata:
+      labels:
+        app: ecr-demo-201
+    spec:
+      containers:
+      - name: ecr-demo-201
+        image: 185592412460.dkr.ecr.ap-southeast-1.amazonaws.com/ecr-demo-201:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8085
+          name: http
+          protocol: TCP
+# service type loadbalancer       
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ecr-demo-201
+    k8s-app: ecr-demo-201
+  name: ecr-demo-201
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8085
+  type: LoadBalancer
+  selector:
+    app: ecr-demo-201
